@@ -10,7 +10,7 @@ Goals:
 - Bonuses: Connect to calendars for reminders, meet you outside when you are home from the store, auto homing and recharging.
 
 Currently Equipment:<br>
-Radxa Zero (though any Raspberry Pi device that supports ROS2 should work)
-Cytron SmartDrive DC Motor Driver (30 Amp) https://www.cytron.io/p-30amp-7v-35v-smartdrive-dc-motor-driver-2-channels
-Ryobi 40v Batteries
-Buck converters (20 amp, to drop the 40v to ~25v)
+Radxa Zero (though any Raspberry Pi device that supports ROS2 should work)<br>
+Cytron SmartDrive DC Motor Driver (30 Amp) https://www.cytron.io/p-30amp-7v-35v-smartdrive-dc-motor-driver-2-channels<br>
+Ryobi 40v Batteries<br>
+Buck converters (20 amp, to drop the 40v to ~25v)<br>
