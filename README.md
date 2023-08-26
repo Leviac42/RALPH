@@ -12,7 +12,7 @@ Goals:
 - Have it be relatively autonomous. Basic avoidance is a must, and it should be able to follow someone on command.
 - Bonuses: Connect to calendars for reminders, meet you outside when you are home from the store, auto homing and recharging.
 
-Currently Equipment:<br>
+Current Equipment:<br>
 Radxa Zero (though any Raspberry Pi device that supports ROS2 should work)<br>
 Cytron SmartDrive DC Motor Driver (30 Amp) https://www.cytron.io/p-30amp-7v-35v-smartdrive-dc-motor-driver-2-channels<br>
 Ryobi 40v Batteries<br>
