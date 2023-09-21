@@ -31,17 +31,17 @@ class ControlNode(Node):
         # Scale the value from the input range to the output range.
         return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
     
-    def switch_control_mode(self):
+    def switch_control_mode(self, stick):
     # Get the current control mode.
-        current_mode = self.stick
+        current_mode = stick
         # Switch to the other control mode.
         if current_mode == "single":
-            self.stick = "dual"
+            stick = "dual"
         else:
-            self.stick = "single"
+            stick = "single"
 
         # Return the new control mode.
-        return self.stick
+        return stick
 
     def on_joy(self, msg):
         # Print joystick values.
