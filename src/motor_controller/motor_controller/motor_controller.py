@@ -62,9 +62,11 @@ class ControlNode(Node):
         
         # Dual stick mode, left stick controls left motor, right stick controls right motor
 
-        
-        if msg.buttons[0] != self.stick:
-            self.stick = self.switch_control_mode()
+        self.stick_button = msg.buttons[0]
+
+        if self.stick_button == 1:
+            self.stick = self.switch_control_mode(self.stick)
+    
 
         if self.stick == "dual":
             self.dual_stick(msg)
