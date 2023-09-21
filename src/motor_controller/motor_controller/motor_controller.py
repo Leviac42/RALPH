@@ -76,8 +76,10 @@ class ControlNode(Node):
 
     def dual_stick(self, msg):
         # self.stick_button = msg.buttons[0]
+        # Left joy stick axes[4]
         self.motor_left = msg.axes[4] * 100
         self.motor_right = msg.axes[1] * 100
+
         if self.motor_left > 0:
             self.motor_left = self.scale(self.motor_left, 1, 100, 1, 63)
         elif self.motor_left < 0:
