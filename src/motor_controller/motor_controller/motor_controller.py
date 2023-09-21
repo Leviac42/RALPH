@@ -20,6 +20,10 @@ class ControlNode(Node):
         self.motor_left = 0
         self.motor_right = 0
         self.motor_drive = 0
+        self.turn_axis = 0
+        self.stick_button = 0
+        self.stick = "single"
+        self.turn_speed = 0
         
         self.serial_port = serial.Serial("/dev/ttyS0", 9600, timeout=0.5)
 
@@ -40,24 +44,79 @@ class ControlNode(Node):
         # self.get_logger().info("Axes 7: {}".format(msg.axes[7]))
         # self.get_logger().info("Buttons: {}".format(msg.buttons))
         
-        self.motor_left = msg.axes[4] * 100
-        self.motor_right = msg.axes[1] * 100
+        # self.motor_left = msg.axes[4] * 100
+        # self.motor_right = msg.axes[1] * 100
+        # self.turn_axis = msg.axes[0] * 100
         
-    
-        if self.motor_left > 0:
-            self.motor_left = self.scale(self.motor_left, 1, 100, 1, 63)
-        elif self.motor_left < 0:
-            self.motor_left = self.scale(self.motor_left, -1, -100, 65, 127)
-        else:
-            self.motor_left = 64
+        # Dual stick mode, left stick controls left motor, right stick controls right motor
+        self.stick_button = msg.buttons[0]
+        if self.stick_button == 1:
+            if self.stick.mode == "single":
+                self.stick.mode = "dual"
+            else:
+                self.stick.mode = "single"
+
+        def dual_stick(self, msg):
+            self.motor_left = msg.axes[1] * 100
+            self.motor_right = msg.axes[4] * 100
+            if self.motor_left > 0:
+                self.motor_left = self.scale(self.motor_left, 1, 100, 1, 63)
+            elif self.motor_left < 0:
+                self.motor_left = self.scale(self.motor_left, -1, -100, 65, 127)
+            else:
+                self.motor_left = 64
+            if self.motor_right > 0:
+                self.motor_right = self.scale(self.motor_right, 1, 100, 193, 255)
+            elif self.motor_right < 0:
+                self.motor_right = self.scale(self.motor_right, -1, -100, 129, 191)
+            else:
+                self.motor_right = 192
+            return self.motor_left, self.motor_right
+        
+        def single_stick(self, msg):
+            forward_speed = msg.axes[1] * 100
+            turn_speed = msg.axes[0] * 100
+            
+            # Calculate basic motor speeds from forward input
+            if forward_speed > 0:
+                self.motor_left = self.scale(forward_speed, 1, 100, 1, 63)
+                self.motor_right = self.scale(forward_speed, 1, 100, 129, 191)
+            elif forward_speed < 0:
+                self.motor_left = self.scale(forward_speed, -1, -100, 65, 127)
+                self.motor_right = self.scale(forward_speed, -1, -100, 193, 255)
+            else:
+                self.motor_left = 64
+                self.motor_right = 192
+            
+            # Adjust motor speeds for turning
+            if turn_speed > 0:  # Stick moved to the right
+                # Decrease speed of right motor and increase speed of left motor
+                self.motor_left = min(self.motor_left + abs(turn_speed), 63) if forward_speed >= 0 else max(self.motor_left - abs(turn_speed), 65)
+                self.motor_right = max(self.motor_right - abs(turn_speed), 129) if forward_speed >= 0 else min(self.motor_right + abs(turn_speed), 191)
+            elif turn_speed < 0:  # Stick moved to the left
+                # Decrease speed of left motor and increase speed of right motor
+                self.motor_left = max(self.motor_left - abs(turn_speed), 1) if forward_speed >= 0 else min(self.motor_left + abs(turn_speed), 127)
+                self.motor_right = min(self.motor_right + abs(turn_speed), 191) if forward_speed >= 0 else max(self.motor_right - abs(turn_speed), 193)
+                
+            # Spot turn when only axis[0] is being used and no forward/backward movement
+            if forward_speed == 0:
+                if turn_speed > 0:  # Right spot turn
+                    self.motor_left = self.scale(turn_speed, 1, 100, 1, 63)
+                    self.motor_right = self.scale(-turn_speed, -1, -100, 193, 255)
+                elif turn_speed < 0:  # Left spot turn
+                    self.motor_left = self.scale(turn_speed, -1, -100, 65, 127)
+                    self.motor_right = self.scale(-turn_speed, 1, 100, 129, 191)
+            return self.motor_left, self.motor_right
 
 
-        if self.motor_right > 0:
-            self.motor_right = self.scale(self.motor_right, 1, 100, 193, 255)
-        elif self.motor_right < 0:
-            self.motor_right = self.scale(self.motor_right, -1, -100, 129, 191)
+        if self.stick.mode == "dual":
+            dual_stick(self)
         else:
-            self.motor_right = 192
+            single_stick(self)
+        
+
+        # Single stick mode. Left stick controls forward/backward, right stick controls turning
+        
 
     def publish_motor_commands(self):
         packetleft = bytearray()
