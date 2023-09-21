@@ -51,10 +51,10 @@ class ControlNode(Node):
         # Dual stick mode, left stick controls left motor, right stick controls right motor
         self.stick_button = msg.buttons[0]
         if self.stick_button == 1:
-            if self.stick.mode == "single":
-                self.stick.mode = "dual"
+            if self.stick == "single":
+                self.stick = "dual"
             else:
-                self.stick.mode = "single"
+                self.stick = "single"
 
         def dual_stick(self, msg):
             self.motor_left = msg.axes[1] * 100
@@ -109,7 +109,7 @@ class ControlNode(Node):
             return self.motor_left, self.motor_right
 
 
-        if self.stick.mode == "dual":
+        if self.stick == "dual":
             dual_stick(self)
         else:
             single_stick(self)
