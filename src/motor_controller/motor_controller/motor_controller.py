@@ -117,12 +117,12 @@ class ControlNode(Node):
         # Adjust motor speeds for turning
         if turn_speed > 0:  # Stick moved to the right
             # Decrease speed of right motor and increase speed of left motor
-            self.motor_left = min(self.motor_left + abs(.5*turn_speed), 63) if forward_speed >= 0 else max(self.motor_left - abs(.5*turn_speed), 65)
-            self.motor_right = max(self.motor_right - abs(.5*turn_speed), 129) if forward_speed >= 0 else min(self.motor_right + abs(.5*turn_speed), 191)
+            self.motor_left = min(self.motor_left + abs(self.motor_left-turn_speed), 63) if forward_speed >= 0 else max(self.motor_left - abs(turn_speed), 65)
+            self.motor_right = max(self.motor_right - abs(self.motor_right+turn_speed), 129) if forward_speed >= 0 else min(self.motor_right + abs(turn_speed), 191)
         elif turn_speed < 0:  # Stick moved to the left
             # Decrease speed of left motor and increase speed of right motor
-            self.motor_left = max(self.motor_left - abs(.5*turn_speed), 1) if forward_speed >= 0 else min(self.motor_left + abs(.5*turn_speed), 127)
-            self.motor_right = min(self.motor_right + abs(.5*turn_speed), 191) if forward_speed >= 0 else max(self.motor_right - abs(.5*turn_speed), 193)
+            self.motor_left = max(self.motor_left - abs(self.motor_left+turn_speed), 1) if forward_speed >= 0 else min(self.motor_left + abs(turn_speed), 127)
+            self.motor_right = min(self.motor_right + abs(self.motor_right-turn_speed), 191) if forward_speed >= 0 else max(self.motor_right - abs(turn_speed), 193)
             
         # Spot turn when only axis[0] is being used and no forward/backward movement
         if forward_speed == 0:
