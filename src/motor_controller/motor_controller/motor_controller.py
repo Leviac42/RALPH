@@ -86,8 +86,8 @@ class ControlNode(Node):
             return self.motor_left, self.motor_right
         
         def single_stick(self):
-            forward_speed = msg.axes[1] * 100
-            turn_speed = msg.axes[0] * 100
+            forward_speed = msg.axes[0] * 100
+            turn_speed = msg.axes[1] * 100
             # self.stick_button = msg.buttons[0]
 
             
