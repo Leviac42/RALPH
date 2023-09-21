@@ -30,6 +30,18 @@ class ControlNode(Node):
     def scale(self, value, in_min, in_max, out_min, out_max):
         # Scale the value from the input range to the output range.
         return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
+    
+    def switch_control_mode(self):
+    # Get the current control mode.
+        current_mode = self.stick
+        # Switch to the other control mode.
+        if current_mode == "single":
+            self.stick = "dual"
+        else:
+            self.stick = "single"
+
+        # Return the new control mode.
+        return self.stick
 
     def on_joy(self, msg):
         # Print joystick values.
@@ -51,7 +63,7 @@ class ControlNode(Node):
         # Dual stick mode, left stick controls left motor, right stick controls right motor
 
         def dual_stick(self):
-            self.stick_button = msg.buttons[0]
+            # self.stick_button = msg.buttons[0]
             self.motor_left = msg.axes[1] * 100
             self.motor_right = msg.axes[4] * 100
             if self.motor_left > 0:
@@ -66,17 +78,17 @@ class ControlNode(Node):
                 self.motor_right = self.scale(self.motor_right, -1, -100, 129, 191)
             else:
                 self.motor_right = 192
-            if self.stick_button == 1:
-                if self.stick == "single":
-                    self.stick = "dual"
-                else:
-                    self.stick = "single"
-            return self.motor_left, self.motor_right, self.stick
+            # if self.stick_button == 1:
+            #     if self.stick == "single":
+            #         self.stick = "dual"
+            #     else:
+            #         self.stick = "single"
+            return self.motor_left, self.motor_right
         
         def single_stick(self):
             forward_speed = msg.axes[1] * 100
             turn_speed = msg.axes[0] * 100
-            self.stick_button = msg.buttons[0]
+            # self.stick_button = msg.buttons[0]
 
             
             # Calculate basic motor speeds from forward input
@@ -108,13 +120,15 @@ class ControlNode(Node):
                 elif turn_speed < 0:  # Left spot turn
                     self.motor_left = self.scale(turn_speed, -1, -100, 65, 127)
                     self.motor_right = self.scale(-turn_speed, 1, 100, 129, 191)
-            if self.stick_button == 1:
-                if self.stick == "single":
-                    self.stick = "dual"
-                else:
-                    self.stick = "single"
-            return self.motor_left, self.motor_right, self.stick
-
+            # if self.stick_button == 1:
+            #     if self.stick == "single":
+            #         self.stick = "dual"
+            #     else:
+            #         self.stick = "single"
+            return self.motor_left, self.motor_right
+        
+        if msg.buttons[0] == 1:
+            self.stick = self.switch_control_mode()
 
         if self.stick == "dual":
             dual_stick(self)
