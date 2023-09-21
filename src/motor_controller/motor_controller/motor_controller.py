@@ -127,17 +127,14 @@ class ControlNode(Node):
             #         self.stick = "single"
             return self.motor_left, self.motor_right
         
-        if msg.buttons[0] == 1:
+        if msg.buttons[0] != self.stick:
             self.stick = self.switch_control_mode()
 
         if self.stick == "dual":
             dual_stick(self)
         else:
             single_stick(self)
-        
-
-        # Single stick mode. Left stick controls forward/backward, right stick controls turning
-        
+                
 
     def publish_motor_commands(self):
         packetleft = bytearray()
