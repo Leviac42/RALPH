@@ -56,7 +56,7 @@ class ControlNode(Node):
             else:
                 self.stick = "single"
 
-        def dual_stick(self, msg):
+        def dual_stick(self):
             self.motor_left = msg.axes[1] * 100
             self.motor_right = msg.axes[4] * 100
             if self.motor_left > 0:
@@ -73,7 +73,7 @@ class ControlNode(Node):
                 self.motor_right = 192
             return self.motor_left, self.motor_right
         
-        def single_stick(self, msg):
+        def single_stick(self):
             forward_speed = msg.axes[1] * 100
             turn_speed = msg.axes[0] * 100
             
