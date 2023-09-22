@@ -105,25 +105,33 @@ class ControlNode(Node):
         # self.get_logger().info("Axes 6: {}".format(msg.axes[6]))
         # self.get_logger().info("Axes 7: {}".format(msg.axes[7]))
 
-
-        if self.forward_speed > 0 and self.reverse_speed == 0:
-            self.motor_left = self.scale(self.forward_speed, 100, -100, 1, 63)
-            self.motor_right = self.scale(self.forward_speed, 100, -100, 193, 255)
+        if self.forward_speed > 0:
+            self.motor_left = self.scale(self.forward_speed, 0, 100, 0, 63)
+            self.motor_right = self.scale(self.forward_speed, 0, 100, 193, 255)
         elif self.reverse_speed > 0 and self.forward_speed == 0:
-            self.motor_left = self.scale(self.reverse_speed, 100, -100, 65, 127)
-            self.motor_right = self.scale(self.reverse_speed, 100, -100, 129, 191)
-        elif self.motor_left > 0 and self.forward_speed == 0 and self.reverse_speed == 0:
-            self.motor_left = self.scale(self.motor_left, 1, 100, 1, 63)
-        elif self.motor_left < 0 and self.forward_speed == 0 and self.reverse_speed == 0:
-            self.motor_left = self.scale(self.motor_left, -1, -100, 65, 127)
-        elif self.motor_left == 0 and self.forward_speed == 0 and self.reverse_speed == 0:
-            self.motor_left = 64
-        elif self.motor_right > 0 and self.forward_speed == 0 and self.reverse_speed == 0:
-            self.motor_right = self.scale(self.motor_right, 1, 100, 193, 255)
-        elif self.motor_right < 0 and self.forward_speed == 0 and self.reverse_speed == 0:
-            self.motor_right = self.scale(self.motor_right, -1, -100, 129, 191)
-        elif self.motor_left == 0 and self.forward_speed == 0 and self.reverse_speed == 0:
-            self.motor_right = 192
+            self.motor_left = self.scale(self.reverse_speed, 0, 100, 65, 127)
+            self.motor_right = self.scale(self.reverse_speed, 0, 100, 129, 191)
+
+
+
+        # if self.forward_speed > 0 and self.reverse_speed == 0:
+        #     self.motor_left = self.scale(self.forward_speed, 100, -100, 1, 63)
+        #     self.motor_right = self.scale(self.forward_speed, 100, -100, 193, 255)
+        # elif self.reverse_speed > 0 and self.forward_speed == 0:
+        #     self.motor_left = self.scale(self.reverse_speed, 100, -100, 65, 127)
+        #     self.motor_right = self.scale(self.reverse_speed, 100, -100, 129, 191)
+        # elif self.motor_left > 0 and self.forward_speed == 0 and self.reverse_speed == 0:
+        #     self.motor_left = self.scale(self.motor_left, 1, 100, 1, 63)
+        # elif self.motor_left < 0 and self.forward_speed == 0 and self.reverse_speed == 0:
+        #     self.motor_left = self.scale(self.motor_left, -1, -100, 65, 127)
+        # elif self.motor_left == 0 and self.forward_speed == 0 and self.reverse_speed == 0:
+        #     self.motor_left = 64
+        # elif self.motor_right > 0 and self.forward_speed == 0 and self.reverse_speed == 0:
+        #     self.motor_right = self.scale(self.motor_right, 1, 100, 193, 255)
+        # elif self.motor_right < 0 and self.forward_speed == 0 and self.reverse_speed == 0:
+        #     self.motor_right = self.scale(self.motor_right, -1, -100, 129, 191)
+        # elif self.motor_left == 0 and self.forward_speed == 0 and self.reverse_speed == 0:
+        #     self.motor_right = 192
 
 
         # self.get_logger().info("Motor Left: {}".format(self.motor_left))
