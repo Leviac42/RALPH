@@ -107,10 +107,10 @@ class ControlNode(Node):
         # self.forward_speed = self.scale(self.forward_speed, 100, -100, 0, 100)
         # self.reverse_speed = self.scale(self.reverse_speed, 100, -100, 0, 100)
 
-        if self.forward_speed > 0 and self.reverse_speed == 0:
+        if self.forward_speed > 0 and self.scale(self.reverse_speed, 100, -100, 0, 100) == 0:
             self.motor_left = self.scale(self.forward_speed, 100, -100, 1, 63)
             self.motor_right = self.scale(self.forward_speed, 100, -100, 193, 255)
-        elif self.reverse_speed > 0 and self.forward_speed == 0:
+        elif self.reverse_speed > 0 and self.scale(self.forward_speed, 100, -100, 0, 100) == 0:
             self.motor_left = self.scale(self.reverse_speed, 100, -100, 65, 127)
             self.motor_right = self.scale(self.reverse_speed, 100, -100, 129, 191)
         else:
