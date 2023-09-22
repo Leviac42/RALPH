@@ -26,6 +26,7 @@ class ControlNode(Node):
         self.turn_speed = 0
         self.forward_speed = 0
         self.reverse_speed = 0
+        self.max_speed = 0
         
         self.serial_port = serial.Serial("/dev/ttyS0", 9600, timeout=0.5)
 
@@ -75,7 +76,11 @@ class ControlNode(Node):
         else:
             self.single_stick(msg)
 
-
+    def calculate_motor_speeds(self, forward_speed, motor_speed, max_speed):
+        motor_speed += forward_speed
+        motor_speed = max(1, min(motor_speed, max_speed))
+        return motor_speed
+    
     def dual_stick(self, msg):
         # self.stick_button = msg.buttons[0]
         # Left joy stick axes[4]
@@ -111,7 +116,20 @@ class ControlNode(Node):
         elif self.reverse_speed > 0 and self.forward_speed == 0:
             self.motor_left = self.scale(self.reverse_speed, 0, 100, 65, 127)
             self.motor_right = self.scale(self.reverse_speed, 0, 100, 129, 191)
-        elif self.forward_speed == 0 and self.reverse_speed == 0:
+        # Turn robot left going forward
+        elif self.motor_left > 0 and self.forward_speed > 0 and self.reverse_speed == 0:
+            self.motor_left =  self.calculate_motor_speeds(self.forward_speed, self.motor_left, 63)
+        elif self.motor_right > 0 and self.forward_speed > 0 and self.reverse_speed == 0:
+            self.motor_right = self.calculate_motor_speeds(self.forward_speed, self.motor_right, 255)
+        elif self.motor_left > 0 and self.forward_speed == 0 and self.reverse_speed == 0:
+            self.motor_left = self.scale(self.motor_left, 1, 100, 1, 63)
+        elif self.motor_left < 0 and self.forward_speed == 0 and self.reverse_speed == 0:
+            self.motor_left = self.scale(self.motor_left, -1, -100, 65, 127)
+        elif self.motor_right > 0 and self.forward_speed == 0 and self.reverse_speed == 0:
+            self.motor_right = self.scale(self.motor_right, 1, 100, 193, 255)
+        elif self.motor_right < 0 and self.forward_speed == 0 and self.reverse_speed == 0:
+            self.motor_right = self.scale(self.motor_right, -1, -100, 129, 191)
+        elif self.forward_speed == 0 and self.reverse_speed == 0 and self.motor_left == 0 and self.motor_right == 0:
             self.motor_left = 64
             self.motor_right = 192
 
