@@ -98,10 +98,10 @@ class ControlNode(Node):
         self.forward_speed = self.scale(self.forward_speed, 100, -100, 0, 100)
         # self.get_logger().info("Axes 0: {}".format(msg.axes[0]))
         # self.get_logger().info("Axes 1: {}".format(msg.axes[1]))
-        self.get_logger().info("Axes 2: {}".format(msg.axes[2]))
-        # self.get_logger().info("Axes 3: {}".format(msg.axes[3]))
-        # self.get_logger().info("Axes 4: {}".format(msg.axes[4]))
-        self.get_logger().info("Axes 5: {}".format(msg.axes[5]))
+        # self.get_logger().info("Axes 2: {}".format(msg.axes[2]))
+        # # self.get_logger().info("Axes 3: {}".format(msg.axes[3]))
+        # # self.get_logger().info("Axes 4: {}".format(msg.axes[4]))
+        # self.get_logger().info("Axes 5: {}".format(msg.axes[5]))
         # self.get_logger().info("Axes 6: {}".format(msg.axes[6]))
         # self.get_logger().info("Axes 7: {}".format(msg.axes[7]))
 
@@ -126,8 +126,8 @@ class ControlNode(Node):
             self.motor_right = 192
 
 
-        self.get_logger().info("Motor Left: {}".format(self.motor_left))
-        self.get_logger().info("Motor Right: {}".format(self.motor_right))
+        # self.get_logger().info("Motor Left: {}".format(self.motor_left))
+        # self.get_logger().info("Motor Right: {}".format(self.motor_right))
         self.get_logger().info("Forward Speed: {}".format(self.forward_speed))
         self.get_logger().info("Reverse Speed: {}".format(self.reverse_speed))
 
