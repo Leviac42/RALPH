@@ -24,6 +24,8 @@ class ControlNode(Node):
         self.stick_button = 0
         self.stick = "single"
         self.turn_speed = 0
+        self.forward_speed = 0
+        self.reverse_speed = 0
         
         self.serial_port = serial.Serial("/dev/ttyS0", 9600, timeout=0.5)
 
@@ -80,15 +82,27 @@ class ControlNode(Node):
         self.motor_left = msg.axes[4] * 100
         self.motor_right = msg.axes[1] * 100
         self.forward_speed = msg.axes[5] * 100
+        self.reverse_speed = msg.axes[2] * 100
 
-        self.get_logger().info("Axes 0: {}".format(msg.axes[0]))
-        self.get_logger().info("Axes 1: {}".format(msg.axes[1]))
-        self.get_logger().info("Axes 2: {}".format(msg.axes[2]))
-        self.get_logger().info("Axes 3: {}".format(msg.axes[3]))
-        self.get_logger().info("Axes 4: {}".format(msg.axes[4]))
-        self.get_logger().info("Axes 5: {}".format(msg.axes[5]))
-        self.get_logger().info("Axes 6: {}".format(msg.axes[6]))
-        self.get_logger().info("Axes 7: {}".format(msg.axes[7]))
+        # self.get_logger().info("Axes 0: {}".format(msg.axes[0]))
+        # self.get_logger().info("Axes 1: {}".format(msg.axes[1]))
+        # self.get_logger().info("Axes 2: {}".format(msg.axes[2]))
+        # self.get_logger().info("Axes 3: {}".format(msg.axes[3]))
+        # self.get_logger().info("Axes 4: {}".format(msg.axes[4]))
+        # self.get_logger().info("Axes 5: {}".format(msg.axes[5]))
+        # self.get_logger().info("Axes 6: {}".format(msg.axes[6]))
+        # self.get_logger().info("Axes 7: {}".format(msg.axes[7]))
+
+        self.forward_speed = self.scale(self.forward_speed, 100, -100, 1, 100)
+        self.reverse_speed = self.scale(self.reverse_speed, 100, -100, 1, 100)
+
+        if self.forward_speed > 0:
+            self.motor_left = self.scale(self.forward_speed, 1, 100, 1, 63)
+            self.motor_right = self.scale(self.forward_speed, 1, 100, 193, 255)
+        elif self.reverse_speed > 0:
+            self.motor_left = self.scale(self.reverse_speed, 1, 100, 65, 127)
+            self.motor_right = self.scale(self.reverse_speed, 1, 100, 129, 191)
+
 
         if self.motor_left > 0:
             self.motor_left = self.scale(self.motor_left, 1, 100, 1, 63)
