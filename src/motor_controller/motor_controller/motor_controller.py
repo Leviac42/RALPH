@@ -97,10 +97,10 @@ class ControlNode(Node):
 
         # self.get_logger().info("Axes 0: {}".format(msg.axes[0]))
         # self.get_logger().info("Axes 1: {}".format(msg.axes[1]))
-        # self.get_logger().info("Axes 2: {}".format(msg.axes[2]))
+        self.get_logger().info("Axes 2: {}".format(msg.axes[2]))
         # self.get_logger().info("Axes 3: {}".format(msg.axes[3]))
         # self.get_logger().info("Axes 4: {}".format(msg.axes[4]))
-        # self.get_logger().info("Axes 5: {}".format(msg.axes[5]))
+        self.get_logger().info("Axes 5: {}".format(msg.axes[5]))
         # self.get_logger().info("Axes 6: {}".format(msg.axes[6]))
         # self.get_logger().info("Axes 7: {}".format(msg.axes[7]))
 
