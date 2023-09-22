@@ -135,6 +135,16 @@ class ControlNode(Node):
 
         # Check if both forward_speed and reverse_speed are 0 for spinning in opposite directions
         if forward_speed == 0 and reverse_speed == 0:
+            if motor_left > 0:
+                motor_left_speed = motor_left_delta * map_value(motor_left, 0, 100, 1, 63)
+            elif motor_left < 0:
+                motor_left_speed = motor_left_delta * map_value(motor_left, 0, -100, 65, 127)
+            elif motor_right > 0:
+                motor_right_speed = motor_right_delta * map_value(motor_right, 0, 100, 129, 191)
+            elif motor_right < 0:
+                motor_right_speed = motor_right_delta * map_value(motor_right, 0, -100, 193, 255)
+
+
             motor_left_speed = motor_left_delta
             motor_right_speed = motor_right_delta
 
