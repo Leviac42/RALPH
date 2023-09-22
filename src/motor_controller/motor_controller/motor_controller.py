@@ -117,12 +117,12 @@ class ControlNode(Node):
         if forward_speed == 0 and reverse_speed == 0 and motor_left == 0 and motor_right == 0:
             return 64, 192  # Full stop for both motors
 
-        reverse_flag = False
+        mode_flag = "Reverse"
         if forward_speed > 0:
             base_speed = map_value(forward_speed, 0, 100, 1, 63)
         elif reverse_speed > 0:
             base_speed = map_value(reverse_speed, 0, 100, 1, 63)
-            reverse_flag = True
+            mode_flag = True
         else:
             base_speed = 0
 
@@ -135,26 +135,29 @@ class ControlNode(Node):
 
         # Check if both forward_speed and reverse_speed are 0 for spinning in opposite directions
         if forward_speed == 0 and reverse_speed == 0:
-            if motor_left > 0:
-                motor_left_speed = motor_left_delta * map_value(motor_left, 0, 100, 1, 63)
-            elif motor_left < 0:
-                motor_left_speed = motor_left_delta * map_value(motor_left, 0, -100, 65, 127)
-            elif motor_right > 0:
-                motor_right_speed = motor_right_delta * map_value(motor_right, 0, 100, 129, 191)
-            elif motor_right < 0:
-                motor_right_speed = motor_right_delta * map_value(motor_right, 0, -100, 193, 255)
-
-
+            if motor_left != 0:
+                motor_left_speed = motor_left_delta 
+            elif motor_right != 0:
+                motor_right_speed = motor_right_delta
             # motor_left_speed = motor_left_delta
             # motor_right_speed = motor_right_delta
 
         # Map to the correct range based on forward or reverse flag
-        if reverse_flag:
+        if mode_flag == "Reverse":
             motor_left_speed = map_value(motor_left_speed, -63, 126, 65, 127)
             motor_right_speed = map_value(motor_right_speed, -63, 126, 129, 191)
-        else:
+        elif mode_flag == "Forward":
             motor_left_speed = map_value(motor_left_speed, -63, 126, 1, 63)
             motor_right_speed = map_value(motor_right_speed, -63, 126, 193, 255)
+        elif mode_flag == "Turn":
+            if motor_left > 0:
+                motor_left_speed = map_value(motor_left_speed, -63, 126, 1, 63)
+            elif motor_left < 0:
+                motor_left_speed = map_value(motor_left_speed, -63, 126, 65, 127)
+            if motor_right > 0:
+                motor_right_speed = map_value(motor_right_speed, -63, 126, 129, 191)
+            elif motor_right < 0:
+                motor_right_speed = map_value(motor_right_speed, -63, 126, 193, 255)
 
         # Clamp to ensure within valid range
         motor_left_speed = clamp(motor_left_speed, 1, 127)
