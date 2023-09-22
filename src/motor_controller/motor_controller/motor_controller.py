@@ -132,7 +132,10 @@ class ControlNode(Node):
             self.motor_right = 192
 
 
-
+        self.get_logger().info("Motor Left: {}".format(self.motor_left))
+        self.get_logger().info("Motor Right: {}".format(self.motor_right))
+        self.get_logger().info("Forward Speed: {}".format(self.forward_speed))
+        self.get_logger().info("Reverse Speed: {}".format(self.reverse_speed))
 
         return self.motor_left, self.motor_right
     
