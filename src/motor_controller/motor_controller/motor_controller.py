@@ -128,8 +128,8 @@ class ControlNode(Node):
         forward_factor = map_value(forward_speed, 0, 100, 0, 1)
         reverse_factor = map_value(reverse_speed, 0, 100, 0, 1)
 
-        motor_left_speed = int(motor_left_speed * (forward_factor - reverse_factor))
-        motor_right_speed = int(motor_right_speed * (forward_factor - reverse_factor))
+        motor_left_speed = int(motor_left_speed + (forward_factor - reverse_factor))
+        motor_right_speed = int(motor_right_speed + (forward_factor - reverse_factor))
 
         # Clamping the values to ensure they are within the valid range
         motor_left_speed = clamp(motor_left_speed, 1, 255)
