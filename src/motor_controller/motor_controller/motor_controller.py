@@ -149,8 +149,8 @@ class ControlNode(Node):
             #'''Print out the motor speeds for debugging'''
             # self.get_logger().info("Motor Left Speed: {}".format(motor_left_speed))
             # self.get_logger().info("Motor Right Speed: {}".format(motor_right_speed))
-            motor_left_speed = map_value(motor_left_speed, 1, 63, 65, 127)
-            motor_right_speed = map_value(motor_right_speed, 1, 63, 129, 191)
+            motor_left_speed = map_value(motor_left_speed, 1, 126, 65, 127)
+            motor_right_speed = map_value(motor_right_speed, 1, 126, 129, 191)
         elif mode_flag == "Forward":
             motor_left_speed = map_value(motor_left_speed, 1, 126, 1, 63)
             motor_right_speed = map_value(motor_right_speed, 1, 126, 193, 255)
