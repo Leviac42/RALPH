@@ -1,30 +1,25 @@
 ---
-- name: Event Driven Playbook, listens to file changes in ~/code/RALPH/src/motor_controller/motor_controller.py then commits to git
-  hosts: ralph, localhost
-  connection: local
-  gather_facts: false
+- name: Commit and Push Code, and Run Script
+  hosts: localhost
   tasks:
-    - name: Wait for file to change
-      wait_for:
-        path: ~/code/RALPH/src/motor_controller/motor_controller.py
-        state: changed
-      register: file_changed
-      hosts: localhost
-
-    - name: Commit to git
+    - name: Add all changes
       git:
-        repo: ~/code/RALPH
-        dest: ~/code/RALPH
-        state: present
-        update: yes
-        force: yes
-        remote: origin
-        version: master
-      when: file_changed.changed
+        repo: /home/anthonys/Documents/code/RALPH
+        add: True
+        add_ignore_errors: True
 
-    - name: On 192.168.42.188, run /home/ralph/startup.sh
-      shell: /home/ralph/startup.sh
-      hosts: ralph
-      when: file_changed.changed
-      ansible_user: ralph
-      ansible_ssh_pass: Pirate4life42!
+    - name: Commit changes
+      command: git commit -m "Committing via Ansible"
+      args:
+        chdir: /home/anthonys/Documents/code/RALPH
+
+    - name: Push changes to GitHub
+      command: git push
+      args:
+        chdir: /home/anthonys/Documents/code/RALPH
+
+- name: Run script on remote host
+  hosts: ralph
+  tasks:
+    - name: Execute script
+      command: /home/ralph/startup.sh
