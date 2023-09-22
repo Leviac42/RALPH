@@ -145,8 +145,8 @@ class ControlNode(Node):
                 motor_right_speed = motor_right_delta * map_value(motor_right, 0, -100, 193, 255)
 
 
-            motor_left_speed = motor_left_delta
-            motor_right_speed = motor_right_delta
+            # motor_left_speed = motor_left_delta
+            # motor_right_speed = motor_right_delta
 
         # Map to the correct range based on forward or reverse flag
         if reverse_flag:
