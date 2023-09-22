@@ -132,14 +132,14 @@ class ControlNode(Node):
         # Map to the correct range based on forward or reverse flag
         if reverse_flag:
             motor_left_speed = map_value(motor_left_speed, -63, 126, 65, 127)
-            motor_right_speed = map_value(motor_right_speed, -63, 126, 193, 255)
+            motor_right_speed = map_value(motor_right_speed, -63, 126, 129, 191)
         else:
             motor_left_speed = map_value(motor_left_speed, -63, 126, 1, 63)
-            motor_right_speed = map_value(motor_right_speed, -63, 126, 129, 191)
+            motor_right_speed = map_value(motor_right_speed, -63, 126, 193, 255)
 
         # Clamp to ensure within valid range
-        motor_left_speed = clamp(motor_left_speed, 1, 127)
-        motor_right_speed = clamp(motor_right_speed, 129, 255)
+        motor_left_speed = clamp(motor_left_speed, 0, 127)
+        motor_right_speed = clamp(motor_right_speed, 128, 255)
 
         return motor_left_speed, motor_right_speed
 
