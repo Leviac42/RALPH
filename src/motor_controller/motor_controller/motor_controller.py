@@ -109,15 +109,14 @@ class ControlNode(Node):
             return max(min(value, max_value), min_value)
 
         # Determine the base speed from forward/reverse speed input
+        reverse_flag = False
         if forward_speed > 0:
             base_speed = map_value(forward_speed, 0, 100, 1, 63)
-            reverse_flag = False
         elif reverse_speed > 0:
-            base_speed = map_value(reverse_speed, 0, 100, 65, 127)
+            base_speed = map_value(reverse_speed, 0, 100, 1, 63)
             reverse_flag = True
         else:
             base_speed = 0
-            reverse_flag = False  # Default to false
 
         # Adjust the base speed based on joystick input for turning
         motor_left_delta = map_value(motor_left, -100, 100, -base_speed, base_speed)
