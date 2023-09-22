@@ -26,7 +26,6 @@ class ControlNode(Node):
         self.turn_speed = 0
         self.forward_speed = 0
         self.reverse_speed = 0
-        self.max_speed = 0
         
         self.serial_port = serial.Serial("/dev/ttyS0", 9600, timeout=0.5)
 
@@ -76,11 +75,7 @@ class ControlNode(Node):
         else:
             self.single_stick(msg)
 
-    def calculate_motor_speeds(self, forward_speed, motor_speed, max_speed):
-        motor_speed += forward_speed
-        motor_speed = max(1, min(motor_speed, max_speed))
-        return motor_speed
-    
+
     def dual_stick(self, msg):
         # self.stick_button = msg.buttons[0]
         # Left joy stick axes[4]
@@ -101,66 +96,50 @@ class ControlNode(Node):
 
         self.reverse_speed = self.scale(self.reverse_speed, 100, -100, 0, 100)
         self.forward_speed = self.scale(self.forward_speed, 100, -100, 0, 100)
-        # self.get_logger().info("Axes 0: {}".format(msg.axes[0]))
-        # self.get_logger().info("Axes 1: {}".format(msg.axes[1]))
-        # self.get_logger().info("Axes 2: {}".format(msg.axes[2]))
-        # # self.get_logger().info("Axes 3: {}".format(msg.axes[3]))
-        # # self.get_logger().info("Axes 4: {}".format(msg.axes[4]))
-        # self.get_logger().info("Axes 5: {}".format(msg.axes[5]))
-        # self.get_logger().info("Axes 6: {}".format(msg.axes[6]))
-        # self.get_logger().info("Axes 7: {}".format(msg.axes[7]))
 
-        if self.forward_speed > 0 and self.reverse_speed == 0:
-            self.motor_left = self.scale(self.forward_speed, 0, 100, 0, 63)
-            self.motor_right = self.scale(self.forward_speed, 0, 100, 193, 255)
-        if self.reverse_speed > 0 and self.forward_speed == 0:
-            self.motor_left = self.scale(self.reverse_speed, 0, 100, 65, 127)
-            self.motor_right = self.scale(self.reverse_speed, 0, 100, 129, 191)
-        # Turn robot left going forward
-        if self.motor_left > 0 and self.forward_speed > 0 and self.reverse_speed == 0:
-            self.motor_left =  self.calculate_motor_speeds(self.forward_speed, .25*self.motor_left, 63)
-        if self.motor_right > 0 and self.forward_speed > 0 and self.reverse_speed == 0:
-            self.motor_right = self.calculate_motor_speeds(self.forward_speed, .25*self.motor_right, 255)
-        if self.motor_left > 0 and self.forward_speed == 0 and self.reverse_speed == 0:
-            self.motor_left = self.scale(self.motor_left, 1, 100, 1, 63)
-        if self.motor_left < 0 and self.forward_speed == 0 and self.reverse_speed == 0:
-            self.motor_left = self.scale(self.motor_left, -1, -100, 65, 127)
-        if self.motor_right > 0 and self.forward_speed == 0 and self.reverse_speed == 0:
-            self.motor_right = self.scale(self.motor_right, 1, 100, 193, 255)
-        if self.motor_right < 0 and self.forward_speed == 0 and self.reverse_speed == 0:
-            self.motor_right = self.scale(self.motor_right, -1, -100, 129, 191)
-        if self.forward_speed == 0 and self.reverse_speed == 0 and self.motor_left == 0 and self.motor_right == 0:
-            self.motor_left = 64
-            self.motor_right = 192
+        self.motor_left, self.motor_right = self.convert_to_motor_packet(self.motor_left, self.motor_right, self.forward_speed, self.reverse_speed)
 
+        return self.motor_left, self.motor_right 
 
-        # if self.forward_speed > 0 and self.reverse_speed == 0:
-        #     self.motor_left = self.scale(self.forward_speed, 100, -100, 1, 63)
-        #     self.motor_right = self.scale(self.forward_speed, 100, -100, 193, 255)
-        # elif self.reverse_speed > 0 and self.forward_speed == 0:
-        #     self.motor_left = self.scale(self.reverse_speed, 100, -100, 65, 127)
-        #     self.motor_right = self.scale(self.reverse_speed, 100, -100, 129, 191)
-        # elif self.motor_left > 0 and self.forward_speed == 0 and self.reverse_speed == 0:
-        #     self.motor_left = self.scale(self.motor_left, 1, 100, 1, 63)
-        # elif self.motor_left < 0 and self.forward_speed == 0 and self.reverse_speed == 0:
-        #     self.motor_left = self.scale(self.motor_left, -1, -100, 65, 127)
-        # elif self.motor_left == 0 and self.forward_speed == 0 and self.reverse_speed == 0:
-        #     self.motor_left = 64
-        # elif self.motor_right > 0 and self.forward_speed == 0 and self.reverse_speed == 0:
-        #     self.motor_right = self.scale(self.motor_right, 1, 100, 193, 255)
-        # elif self.motor_right < 0 and self.forward_speed == 0 and self.reverse_speed == 0:
-        #     self.motor_right = self.scale(self.motor_right, -1, -100, 129, 191)
-        # elif self.motor_left == 0 and self.forward_speed == 0 and self.reverse_speed == 0:
-        #     self.motor_right = 192
+    def convert_to_motor_packet(self, motor_left, motor_right, forward_speed, reverse_speed):
+        def map_value(value, in_min, in_max, out_min, out_max):
+            return int((value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min)
+
+        def clamp(value, min_value, max_value):
+            return max(min(value, max_value), min_value)
+
+        # Handle motor left
+        if self.motor_left > 0:
+            motor_left_speed = map_value(motor_left, 0, 100, 1, 63)
+        elif motor_left < 0:
+            motor_left_speed = map_value(abs(motor_left), 0, 100, 65, 127)
+        else:
+            motor_left_speed = 64  # Full Stop
+
+        # Handle motor right
+        if motor_right > 0:
+            motor_right_speed = map_value(motor_right, 0, 100, 129, 191)
+        elif motor_right < 0:
+            motor_right_speed = map_value(abs(motor_right), 0, 100, 193, 255)
+        else:
+            motor_right_speed = 192  # Full Stop
+
+        # Handle forward and reverse speeds
+        forward_factor = map_value(forward_speed, 0, 100, 0, 1)
+        reverse_factor = map_value(reverse_speed, 0, 100, 0, 1)
+
+        motor_left_speed = int(motor_left_speed * (forward_factor - reverse_factor))
+        motor_right_speed = int(motor_right_speed * (forward_factor - reverse_factor))
+
+        # Clamping the values to ensure they are within the valid range
+        motor_left_speed = clamp(motor_left_speed, 1, 255)
+        motor_right_speed = clamp(motor_right_speed, 129, 255)
+
+        return motor_left_speed, motor_right_speed
 
 
-        # self.get_logger().info("Motor Left: {}".format(self.motor_left))
-        # self.get_logger().info("Motor Right: {}".format(self.motor_right))
-        self.get_logger().info("Forward Speed: {}".format(self.forward_speed))
-        self.get_logger().info("Reverse Speed: {}".format(self.reverse_speed))
 
-        return self.motor_left, self.motor_right
-    
+
     def single_stick(self, msg):
         forward_speed = msg.axes[0] * 100
         turn_speed = msg.axes[1] * 100
