@@ -111,7 +111,9 @@ class ControlNode(Node):
         elif self.reverse_speed > 0 and self.forward_speed == 0:
             self.motor_left = self.scale(self.reverse_speed, 0, 100, 65, 127)
             self.motor_right = self.scale(self.reverse_speed, 0, 100, 129, 191)
-
+        elif self.forward_speed == 0 and self.reverse_speed == 0:
+            self.motor_left = 64
+            self.motor_right = 192
 
 
         # if self.forward_speed > 0 and self.reverse_speed == 0:
