@@ -138,12 +138,6 @@ class ControlNode(Node):
 
         return motor_left_speed, motor_right_speed
 
-# Example Usage
-motor_left_speed, motor_right_speed = convert_to_motor_packet(100, -100, 50, 0)
-print(f'Motor Left Speed: {motor_left_speed}, Motor Right Speed: {motor_right_speed}')
-
-
-
     def single_stick(self, msg):
         forward_speed = msg.axes[0] * 100
         turn_speed = msg.axes[1] * 100
