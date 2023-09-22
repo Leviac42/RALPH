@@ -104,11 +104,10 @@ class ControlNode(Node):
     def convert_to_motor_packet(self, motor_left, motor_right, forward_speed, reverse_speed):
         def map_value(value, in_min, in_max, out_min, out_max):
             return int((value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min)
-
+        
         def clamp(value, min_value, max_value):
             return max(min(value, max_value), min_value)
 
-        # Determine the base speed from forward/reverse speed input
         reverse_flag = False
         if forward_speed > 0:
             base_speed = map_value(forward_speed, 0, 100, 1, 63)
@@ -118,26 +117,31 @@ class ControlNode(Node):
         else:
             base_speed = 0
 
-        # Adjust the base speed based on joystick input for turning
-        motor_left_delta = map_value(motor_left, -100, 100, -base_speed, base_speed)
-        motor_right_delta = map_value(motor_right, -100, 100, -base_speed, base_speed)
+        # Mapping joystick values for turning
+        motor_left_delta = map_value(motor_left, -100, 100, -63, 63)
+        motor_right_delta = map_value(motor_right, -100, 100, -63, 63)
 
         motor_left_speed = base_speed + motor_left_delta
         motor_right_speed = base_speed + motor_right_delta
 
         # Map to the correct range based on forward or reverse flag
         if reverse_flag:
-            motor_left_speed = map_value(motor_left_speed, 0, 126, 65, 127)
-            motor_right_speed = map_value(motor_right_speed, 0, 126, 129, 191)
+            motor_left_speed = map_value(motor_left_speed, -63, 126, 65, 127)
+            motor_right_speed = map_value(motor_right_speed, -63, 126, 193, 255)
         else:
-            motor_left_speed = map_value(motor_left_speed, 0, 126, 1, 63)
-            motor_right_speed = map_value(motor_right_speed, 0, 126, 193, 255)
+            motor_left_speed = map_value(motor_left_speed, -63, 126, 1, 63)
+            motor_right_speed = map_value(motor_right_speed, -63, 126, 129, 191)
 
         # Clamp to ensure within valid range
         motor_left_speed = clamp(motor_left_speed, 1, 127)
         motor_right_speed = clamp(motor_right_speed, 129, 255)
 
         return motor_left_speed, motor_right_speed
+
+# Example Usage
+motor_left_speed, motor_right_speed = convert_to_motor_packet(100, -100, 50, 0)
+print(f'Motor Left Speed: {motor_left_speed}, Motor Right Speed: {motor_right_speed}')
+
 
 
     def single_stick(self, msg):
@@ -209,6 +213,7 @@ def main():
             rclpy.spin_once(control_node)
     except KeyboardInterrupt:
         pass
+
 
     control_node.destroy_node()
     rclpy.shutdown()
