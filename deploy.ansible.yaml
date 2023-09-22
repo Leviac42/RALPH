@@ -1,25 +1,11 @@
 ---
 - name: Commit and Push Code, and Run Script
-  hosts: localhost
+  hosts: all
   tasks:
-    - name: Add all changes
-      git:
-        repo: /home/anthonys/Documents/code/RALPH
-        add: True
-        add_ignore_errors: True
+    - name: Commit Changes to Github
+      ansible.builtin.shell: cd /home/anthonys/Documents/code/RALPH && git add . && git commit -a -m "Committing via Ansible"
+      delegate_to: localhost
 
-    - name: Commit changes
-      command: git commit -m "Committing via Ansible"
-      args:
-        chdir: /home/anthonys/Documents/code/RALPH
-
-    - name: Push changes to GitHub
-      command: git push
-      args:
-        chdir: /home/anthonys/Documents/code/RALPH
-
-- name: Run script on remote host
-  hosts: ralph
-  tasks:
-    - name: Execute script
-      command: /home/ralph/startup.sh
+    - name: Run script on remote host
+      ansible.builtin.shell: ./home/ralph/startup.sh  
+      when: ansible_hostname == "ralph"
