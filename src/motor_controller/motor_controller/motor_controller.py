@@ -117,14 +117,16 @@ class ControlNode(Node):
         if forward_speed == 0 and reverse_speed == 0 and motor_left == 0 and motor_right == 0:
             return 64, 192  # Full stop for both motors
 
-        mode_flag = "Reverse"
+        
         if forward_speed > 0:
             base_speed = map_value(forward_speed, 0, 100, 1, 63)
+            mode_flag = "Forward"
         elif reverse_speed > 0:
             base_speed = map_value(reverse_speed, 0, 100, 1, 63)
-            mode_flag = True
+            mode_flag = "Reverse"
         else:
             base_speed = 0
+            mode_flag = "Turn"
 
         # Mapping joystick values for turning
         motor_left_delta = map_value(motor_left, -100, 100, -63, 63)
