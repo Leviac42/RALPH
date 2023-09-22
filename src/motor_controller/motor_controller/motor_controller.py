@@ -147,9 +147,10 @@ class ControlNode(Node):
         # Map to the correct range based on forward or reverse flag
         if mode_flag == "Reverse":
             #'''Print out the motor speeds for debugging'''
-            self.get_logger().info("Motor Left Speed: {}".format(motor_left_speed))
-            motor_left_speed = map_value(motor_left_speed, -126, 126, 65, 127)
-            motor_right_speed = map_value(motor_right_speed, -126, 126, 129, 191)
+            # self.get_logger().info("Motor Left Speed: {}".format(motor_left_speed))
+            # self.get_logger().info("Motor Right Speed: {}".format(motor_right_speed))
+            motor_left_speed = map_value(motor_left_speed, 1, 63, 65, 127)
+            motor_right_speed = map_value(motor_right_speed, 1, 63, 129, 191)
         elif mode_flag == "Forward":
             motor_left_speed = map_value(motor_left_speed, -126, 126, 1, 63)
             motor_right_speed = map_value(motor_right_speed, -126, 126, 193, 255)
