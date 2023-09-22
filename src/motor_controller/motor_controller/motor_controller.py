@@ -84,6 +84,17 @@ class ControlNode(Node):
         self.forward_speed = msg.axes[5] * 100
         self.reverse_speed = msg.axes[2] * 100
 
+        if self.forward_speed > 99:
+            self.forward_speed = 100
+        elif self.forward_speed < -99:
+            self.forward_speed = -100
+
+        if self.reverse_speed > 99:
+            self.reverse_speed = 100
+        elif self.reverse_speed < -99:
+            self.reverse_speed = -100
+
+
         # self.get_logger().info("Axes 0: {}".format(msg.axes[0]))
         # self.get_logger().info("Axes 1: {}".format(msg.axes[1]))
         # self.get_logger().info("Axes 2: {}".format(msg.axes[2]))
@@ -93,15 +104,15 @@ class ControlNode(Node):
         # self.get_logger().info("Axes 6: {}".format(msg.axes[6]))
         # self.get_logger().info("Axes 7: {}".format(msg.axes[7]))
 
-        self.forward_speed = self.scale(self.forward_speed, 100, -100, 0, 100)
-        self.reverse_speed = self.scale(self.reverse_speed, 100, -100, 0, 100)
+        # self.forward_speed = self.scale(self.forward_speed, 100, -100, 0, 100)
+        # self.reverse_speed = self.scale(self.reverse_speed, 100, -100, 0, 100)
 
-        if self.forward_speed > 0:
-            self.motor_left = self.scale(self.forward_speed, 1, 100, 1, 63)
-            self.motor_right = self.scale(self.forward_speed, 1, 100, 193, 255)
-        elif self.reverse_speed > 0:
-            self.motor_left = self.scale(self.reverse_speed, 1, 100, 65, 127)
-            self.motor_right = self.scale(self.reverse_speed, 1, 100, 129, 191)
+        if self.forward_speed > 0 and self.reverse_speed == 0:
+            self.motor_left = self.scale(self.forward_speed, 100, -100, 1, 63)
+            self.motor_right = self.scale(self.forward_speed, 100, -100, 193, 255)
+        elif self.reverse_speed > 0 and self.forward_speed == 0:
+            self.motor_left = self.scale(self.reverse_speed, 100, -100, 65, 127)
+            self.motor_right = self.scale(self.reverse_speed, 100, -100, 129, 191)
         else:
             self.forward_speed = 0
             self.reverse_speed = 0
@@ -111,13 +122,13 @@ class ControlNode(Node):
             self.motor_left = self.scale(self.motor_left, 1, 100, 1, 63)
         elif self.motor_left < 0 and self.forward_speed == 0 and self.reverse_speed == 0:
             self.motor_left = self.scale(self.motor_left, -1, -100, 65, 127)
-        elif self.motor_left == 0 and self.motor_right == 0 and self.forward_speed == 0 and self.reverse_speed == 0:
+        elif self.motor_left == 0 and self.forward_speed == 0 and self.reverse_speed == 0:
             self.motor_left = 64
         if self.motor_right > 0 and self.forward_speed == 0 and self.reverse_speed == 0:
             self.motor_right = self.scale(self.motor_right, 1, 100, 193, 255)
         elif self.motor_right < 0 and self.forward_speed == 0 and self.reverse_speed == 0:
             self.motor_right = self.scale(self.motor_right, -1, -100, 129, 191)
-        elif self.motor_left == 0 and self.motor_right == 0 and self.forward_speed == 0 and self.reverse_speed == 0:
+        elif self.motor_left == 0 and self.forward_speed == 0 and self.reverse_speed == 0:
             self.motor_right = 192
 
 
