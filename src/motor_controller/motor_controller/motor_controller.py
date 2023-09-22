@@ -152,8 +152,8 @@ class ControlNode(Node):
             motor_left_speed = map_value(motor_left_speed, 1, 63, 65, 127)
             motor_right_speed = map_value(motor_right_speed, 1, 63, 129, 191)
         elif mode_flag == "Forward":
-            motor_left_speed = map_value(motor_left_speed, -126, 126, 1, 63)
-            motor_right_speed = map_value(motor_right_speed, -126, 126, 193, 255)
+            motor_left_speed = map_value(motor_left_speed, 1, 63, 1, 63)
+            motor_right_speed = map_value(motor_right_speed, 1, 63, 193, 255)
         elif mode_flag == "Turn":
             if motor_left > 0:
                 motor_left_speed = map_value(motor_left_speed, 0, 63, 1, 63)
