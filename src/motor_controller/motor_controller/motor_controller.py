@@ -94,10 +94,10 @@ class ControlNode(Node):
         elif self.reverse_speed < -99:
             self.reverse_speed = -100
 
-        if self.forward_speed <.05 and self.forward_speed > -.05:
-            self.forward_speed = 0
-        if self.reverse_speed <.05 and self.reverse_speed > -.05:
-            self.reverse_speed = 0
+        # if self.forward_speed <.05 and self.forward_speed > -.05:
+        #     self.forward_speed = 0
+        # if self.reverse_speed <.05 and self.reverse_speed > -.05:
+        #     self.reverse_speed = 0
 
 
         self.reverse_speed = self.scale(self.reverse_speed, 100, -100, 0, 100)
