@@ -107,7 +107,7 @@ class ControlNode(Node):
 
         return self.motor_left, self.motor_right 
 
-    def convert_to_motor_packet(motor_left, motor_right, forward_speed, reverse_speed):
+    def convert_to_motor_packet(self, motor_left, motor_right, forward_speed, reverse_speed):
         def map_value(value, in_min, in_max, out_min, out_max):
             return int((value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min)
 
@@ -152,7 +152,7 @@ class ControlNode(Node):
 
         return motor_left_speed, motor_right_speed    
     
-    
+
     def single_stick(self, msg):
         forward_speed = msg.axes[0] * 100
         turn_speed = msg.axes[1] * 100
