@@ -84,14 +84,14 @@ class ControlNode(Node):
         self.forward_speed = msg.axes[5] * 100
         self.reverse_speed = msg.axes[2] * 100
 
-        if self.forward_speed > 99:
+        if self.forward_speed > 95:
             self.forward_speed = 100
-        elif self.forward_speed < -99:
+        elif self.forward_speed < -95:
             self.forward_speed = -100
 
-        if self.reverse_speed > 99:
+        if self.reverse_speed > 95:
             self.reverse_speed = 100
-        elif self.reverse_speed < -99:
+        elif self.reverse_speed < -95:
             self.reverse_speed = -100
 
 
