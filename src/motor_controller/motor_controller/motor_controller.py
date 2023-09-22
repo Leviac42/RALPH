@@ -107,23 +107,22 @@ class ControlNode(Node):
             self.reverse_speed = 0
 
 
-        if self.motor_left > 0:
+        if self.motor_left > 0 and self.forward_speed == 0 and self.reverse_speed == 0:
             self.motor_left = self.scale(self.motor_left, 1, 100, 1, 63)
-        elif self.motor_left < 0:
+        elif self.motor_left < 0 and self.forward_speed == 0 and self.reverse_speed == 0:
             self.motor_left = self.scale(self.motor_left, -1, -100, 65, 127)
         elif self.motor_left == 0 and self.motor_right == 0 and self.forward_speed == 0 and self.reverse_speed == 0:
             self.motor_left = 64
-        if self.motor_right > 0:
+        if self.motor_right > 0 and self.forward_speed == 0 and self.reverse_speed == 0:
             self.motor_right = self.scale(self.motor_right, 1, 100, 193, 255)
-        elif self.motor_right < 0:
+        elif self.motor_right < 0 and self.forward_speed == 0 and self.reverse_speed == 0:
             self.motor_right = self.scale(self.motor_right, -1, -100, 129, 191)
         elif self.motor_left == 0 and self.motor_right == 0 and self.forward_speed == 0 and self.reverse_speed == 0:
             self.motor_right = 192
-        # if self.stick_button == 1:
-        #     if self.stick == "single":
-        #         self.stick = "dual"
-        #     else:
-        #         self.stick = "single"
+
+
+
+
         return self.motor_left, self.motor_right
     
     def single_stick(self, msg):
