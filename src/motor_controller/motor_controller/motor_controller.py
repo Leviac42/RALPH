@@ -79,6 +79,13 @@ class ControlNode(Node):
         # Left joy stick axes[4]
         self.motor_left = msg.axes[4] * 100
         self.motor_right = msg.axes[1] * 100
+        self.forward_speed = msg.axes[5] * 100
+
+        self.get_logger().info("Axes 2: {}".format(msg.axes[2]))
+        self.get_logger().info("Axes 3: {}".format(msg.axes[3]))
+        self.get_logger().info("Axes 4: {}".format(msg.axes[4]))
+        self.get_logger().info("Axes 5: {}".format(msg.axes[5]))        
+
 
         if self.motor_left > 0:
             self.motor_left = self.scale(self.motor_left, 1, 100, 1, 63)
