@@ -156,10 +156,10 @@ class ControlNode(Node):
                 motor_left_speed = map_value(motor_left_speed, 126, -63, 1, 63)
             elif motor_left < 0:
                 motor_left_speed = map_value(motor_left_speed, 126, -63, 65, 127)
-            if motor_right > 0:
-                motor_right_speed = map_value(motor_right_speed, -63, 126, 129, 255)
-            elif motor_right < 0:
-                motor_right_speed = map_value(motor_right_speed, -63, 126, 193, 191)
+            # if motor_right > 0:
+            #     motor_right_speed = map_value(motor_right_speed, -63, 126, 129, 255)
+            # elif motor_right < 0:
+            #     motor_right_speed = map_value(motor_right_speed, -63, 126, 193, 191)
 
         # Clamp to ensure within valid range
         motor_left_speed = clamp(motor_left_speed, 1, 127)
