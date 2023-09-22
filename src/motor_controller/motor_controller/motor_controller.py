@@ -108,22 +108,33 @@ class ControlNode(Node):
         def clamp(value, min_value, max_value):
             return max(min(value, max_value), min_value)
 
+        # Determine the base speed from forward/reverse speed input
         if forward_speed > 0:
-            base_speed_left = map_value(forward_speed, 0, 100, 1, 63)
-            base_speed_right = map_value(forward_speed, 0, 100, 129, 191)
+            base_speed = map_value(forward_speed, 0, 100, 1, 63)
+            reverse_flag = False
         elif reverse_speed > 0:
-            base_speed_left = map_value(reverse_speed, 0, 100, 65, 127)
-            base_speed_right = map_value(reverse_speed, 0, 100, 193, 255)
+            base_speed = map_value(reverse_speed, 0, 100, 65, 127)
+            reverse_flag = True
         else:
-            base_speed_left = 64  # Full Stop
-            base_speed_right = 192  # Full Stop
+            base_speed = 0
+            reverse_flag = False  # Default to false
 
-        motor_left_delta = map_value(motor_left, -100, 100, -62, 62)  # Adjusted delta range to avoid reversal
-        motor_right_delta = map_value(motor_right, -100, 100, -62, 62)  # Adjusted delta range to avoid reversal
+        # Adjust the base speed based on joystick input for turning
+        motor_left_delta = map_value(motor_left, -100, 100, -base_speed, base_speed)
+        motor_right_delta = map_value(motor_right, -100, 100, -base_speed, base_speed)
 
-        motor_left_speed = base_speed_left + motor_left_delta
-        motor_right_speed = base_speed_right - motor_right_delta  # Subtracted delta to maintain same rotation direction
+        motor_left_speed = base_speed + motor_left_delta
+        motor_right_speed = base_speed + motor_right_delta
 
+        # Map to the correct range based on forward or reverse flag
+        if reverse_flag:
+            motor_left_speed = map_value(motor_left_speed, 0, 126, 65, 127)
+            motor_right_speed = map_value(motor_right_speed, 0, 126, 129, 191)
+        else:
+            motor_left_speed = map_value(motor_left_speed, 0, 126, 1, 63)
+            motor_right_speed = map_value(motor_right_speed, 0, 126, 193, 255)
+
+        # Clamp to ensure within valid range
         motor_left_speed = clamp(motor_left_speed, 1, 127)
         motor_right_speed = clamp(motor_right_speed, 129, 255)
 
