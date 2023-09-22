@@ -113,7 +113,7 @@ class ControlNode(Node):
         if self.forward_speed > 0 and self.reverse_speed == 0:
             self.motor_left = self.scale(self.forward_speed, 0, 100, 0, 63)
             self.motor_right = self.scale(self.forward_speed, 0, 100, 193, 255)
-        elif self.reverse_speed > 0 and self.forward_speed == 0:
+        if self.reverse_speed > 0 and self.forward_speed == 0:
             self.motor_left = self.scale(self.reverse_speed, 0, 100, 65, 127)
             self.motor_right = self.scale(self.reverse_speed, 0, 100, 129, 191)
         # Turn robot left going forward
