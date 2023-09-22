@@ -22,7 +22,7 @@ class ControlNode(Node):
         self.motor_drive = 0
         self.turn_axis = 0
         self.stick_button = 0
-        self.stick = "single"
+        self.stick = "dual"
         self.turn_speed = 0
         self.forward_speed = 0
         self.reverse_speed = 0
@@ -101,52 +101,44 @@ class ControlNode(Node):
 
         return self.motor_left, self.motor_right 
 
-    def convert_to_motor_packet(self, motor_left, motor_right, forward_speed, reverse_speed):
+    def convert_to_motor_packet(motor_left, motor_right, forward_speed, reverse_speed):
         def map_value(value, in_min, in_max, out_min, out_max):
             return int((value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min)
 
         def clamp(value, min_value, max_value):
             return max(min(value, max_value), min_value)
 
-        # Handle motor left
-        if self.motor_left > 0:
-            motor_left_speed = map_value(motor_left, 0, 100, 1, 63)
-        elif motor_left < 0:
-            motor_left_speed = map_value(abs(motor_left), 0, 100, 65, 127)
+        # Determine the base speed from forward/reverse speed input
+        if forward_speed > 0:
+            base_speed = map_value(forward_speed, 0, 100, 1, 63)
+            reverse_flag = False
+        elif reverse_speed > 0:
+            base_speed = map_value(reverse_speed, 0, 100, 65, 127)
+            reverse_flag = True
         else:
-            motor_left_speed = 64  # Full Stop
+            base_speed = 0
+            reverse_flag = False  # Default to false
 
-        # Handle motor right
-        if motor_right > 0:
-            motor_right_speed = map_value(motor_right, 0, 100, 129, 191)
-        elif motor_right < 0:
-            motor_right_speed = map_value(abs(motor_right), 0, 100, 193, 255)
+        # Adjust the base speed based on joystick input for turning
+        motor_left_delta = map_value(motor_left, -100, 100, -base_speed, base_speed)
+        motor_right_delta = map_value(motor_right, -100, 100, -base_speed, base_speed)
+
+        motor_left_speed = base_speed + motor_left_delta
+        motor_right_speed = base_speed + motor_right_delta
+
+        # Map to the correct range based on forward or reverse flag
+        if reverse_flag:
+            motor_left_speed = map_value(motor_left_speed, 0, 126, 65, 127)
+            motor_right_speed = map_value(motor_right_speed, 0, 126, 193, 255)
         else:
-            motor_right_speed = 192  # Full Stop
+            motor_left_speed = map_value(motor_left_speed, 0, 126, 1, 63)
+            motor_right_speed = map_value(motor_right_speed, 0, 126, 129, 191)
 
-        # Handle forward and reverse speeds
-        forward_factor = map_value(forward_speed, 0, 100, 0, 1)
-        reverse_factor = map_value(reverse_speed, 0, 100, 0, 1)
-
-        motor_left_speed = int(motor_left_speed * ((1+forward_factor)-(1+reverse_factor)))
-        motor_right_speed = int(motor_right_speed * ((1+forward_factor)-(1+reverse_factor)))
-
-        # Clamping the values to ensure they are within the valid range
-        if self.motor_left > 0:
-            motor_left_speed = clamp(motor_left_speed, 1, 63)
-        elif self.motor_left < 0:
-            motor_left_speed = clamp(motor_left_speed, 65, 127)
-        elif self.motor_right > 0:
-            motor_right_speed = clamp(motor_right_speed, 129, 191)
-        elif self.motor_right < 0:
-            motor_right_speed = clamp(motor_right_speed, 193, 255)
-        elif self.motor_left == 0 and self.motor_right == 0 and self.forward_speed == 0 and self.reverse_speed == 0:
-            motor_left_speed = 64
-            motor_right_speed = 192
+        # Clamp to ensure within valid range
+        motor_left_speed = clamp(motor_left_speed, 1, 127)
+        motor_right_speed = clamp(motor_right_speed, 129, 255)
 
         return motor_left_speed, motor_right_speed
-
-
 
 
     def single_stick(self, msg):
