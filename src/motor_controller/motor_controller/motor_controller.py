@@ -29,10 +29,10 @@ class ControlNode(Node):
         
         try:
             self.serial_port = serial.Serial("/dev/ttyS0", 9600, timeout=0.5)
-        except:
+        except: #Catch all exceptions and then continue on with application simulating a serial port.
             self.get_logger().info("Failed to open serial port")
-            exit(0)
-            
+            self.serial_port = None
+
     def scale(self, value, in_min, in_max, out_min, out_max):
         # Scale the value from the input range to the output range.
         return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
