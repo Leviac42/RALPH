@@ -15,7 +15,7 @@ RUN groupadd --gid $USER_GID $USERNAME \
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y python3-pip git
 RUN git clone https://github.com/Leviac42/RALPH.git /opt/ws_ralph
-RUN cd /opt/ws_ralph && pip3 install -r requirements.txt && colcon build --symlink-install
+RUN . /opt/ws_ralph && pip3 install -r /opt/ws_ralph/requirements.txt && colcon build --symlink-install
 ENV SHELL /bin/bash
 
 # ********************************************************
