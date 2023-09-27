@@ -17,6 +17,7 @@ RUN apt-get install -y python3-pip git
 RUN git clone https://github.com/Leviac42/RALPH.git /opt/ws_ralph/
 RUN chown -R $USERNAME:$USERNAME /opt/ws_ralph/
 RUN cd /opt/ws_ralph && pip3 install -r /opt/ws_ralph/requirements.txt && colcon build --symlink-install
+RUN cp /opt/ws_ralph/ros_entrypoint.sh /ros_entrypoint.sh && chmod +x /ros_entrypoint.sh
 ENV SHELL /bin/bash
 
 # ********************************************************
