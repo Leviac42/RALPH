@@ -28,7 +28,7 @@ class ControlNode(Node):
         self.reverse_speed = 0
 
         try:
-            self.serial_port = serial.Serial("/dev/ttyACM0", 9600, timeout=0.5)
+            self.serial_port = serial.Serial("/dev/ttyACM1", 9600, timeout=0.5)
         except: #Catch all exceptions and then continue on with application simulating a serial port.
             self.get_logger().info("Failed to open serial port")
             self.serial_port = None
