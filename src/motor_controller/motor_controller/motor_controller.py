@@ -60,7 +60,7 @@ class ControlNode(Node):
 
         try:
             self.serial_port = serial.Serial("/dev/ttyUSB0", 9600, timeout=0.5)
-        except (ImportError, serial.SerialException) as e:
+        except ImportError as e:
             print(f"Error opening serial port: {e}")
             self.get_logger().info("Failed to open serial port")
 
