@@ -63,8 +63,9 @@ class ControlNode(Node):
         except ImportError as e:
             print(f"Error opening serial port: {e}")
             self.get_logger().info("Failed to open serial port")
+            self.serial_port = None
 
-        if not self.serial_port:
+        if self.serial_port is None:
             self.serial_port = FakeSerial()
             self.get_logger().info("Using fake serial port")
 
