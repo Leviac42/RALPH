@@ -4,6 +4,35 @@ from sensor_msgs.msg import Joy
 from geometry_msgs.msg import Twist
 import serial
 
+class FakeSerial:
+    def __init__(self):
+        self.connected = False
+    
+    def open(self):
+        self.connected = True
+        print("Fake serial connection opened.")
+        
+    def close(self):
+        self.connected = False
+        print("Fake serial connection closed.")
+        
+    def write(self, data):
+        if self.connected:
+            print(f"Fake serial sending: {data}")
+            return len(data)
+        else:
+            print("Fake serial is not open. Cannot write.")
+            return 0
+    
+    def readline(self):
+        if self.connected:
+            # Generate some fake data to simulate a serial read
+            fake_data = f"FAKE_DATA_{random.randint(0, 100)}\r\n"
+            print(f"Fake serial receiving: {fake_data}")
+            return fake_data.encode('utf-8')
+        else:
+            print("Fake serial is not open. Cannot read.")
+            return b""
 
 class ControlNode(Node):
 
@@ -31,8 +60,9 @@ class ControlNode(Node):
             self.serial_port = serial.Serial("/dev/ttyUSB0", 9600, timeout=0.5)
         except: #Catch all exceptions and then continue on with application simulating a serial port.
             self.get_logger().info("Failed to open serial port")
-            self.serial_port = None
+            self.serial_port = FakeSerial()
             return self.serial_port
+    
 
     def scale(self, value, in_min, in_max, out_min, out_max):
         # Scale the value from the input range to the output range.
