@@ -59,7 +59,7 @@ class ControlNode(Node):
         self.reverse_speed = 0
 
         try:
-            self.serial_port = serial.Serial("/dev/ttyUSB0", 9600, timeout=0.5)
+            self.serial_port = serial.Serial("/dev/ttyS0", 9600, timeout=0.5)
         except ImportError as e:
             print(f"Error opening serial port: {e}")
             self.get_logger().info("Failed to open serial port")
