@@ -60,12 +60,13 @@ class ControlNode(Node):
 
         try:
             self.serial_port = serial.Serial("/dev/ttyUSB0", 9600, timeout=0.5)
-        except: #Catch all exceptions and then continue on with application simulating a serial port.
+        except (ImportError, serial.SerialException) as e:
+            print(f"Error opening serial port: {e}")
             self.get_logger().info("Failed to open serial port")
+
+        if not self.serial_port:
             self.serial_port = FakeSerial()
-            self.serial_port.open()
-            return self.serial_port
-    
+            self.get_logger().info("Using fake serial port")
 
     def scale(self, value, in_min, in_max, out_min, out_max):
         # Scale the value from the input range to the output range.
