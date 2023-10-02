@@ -3,6 +3,7 @@ from rclpy.node import Node
 from sensor_msgs.msg import Joy
 from geometry_msgs.msg import Twist
 import serial
+import random
 
 class FakeSerial:
     def __init__(self):
