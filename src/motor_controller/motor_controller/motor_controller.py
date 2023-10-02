@@ -8,6 +8,8 @@ import random
 class FakeSerial:
     def __init__(self):
         self.connected = False
+        print("Fake serial port created.")
+        
     
     def open(self):
         self.connected = True
