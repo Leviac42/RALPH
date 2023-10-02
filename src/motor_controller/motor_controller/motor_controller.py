@@ -8,8 +8,6 @@ import random
 class FakeSerial:
     def __init__(self):
         self.connected = False
-        print("Fake serial port created.")
-        
     
     def open(self):
         self.connected = True
@@ -36,6 +34,7 @@ class FakeSerial:
         else:
             print("Fake serial is not open. Cannot read.")
             return b""
+
 
 class ControlNode(Node):
 
@@ -64,6 +63,7 @@ class ControlNode(Node):
         except: #Catch all exceptions and then continue on with application simulating a serial port.
             self.get_logger().info("Failed to open serial port")
             self.serial_port = FakeSerial()
+            self.serial_port.open()
             return self.serial_port
     
 
