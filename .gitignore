@@ -2,3 +2,4 @@
 /install/
 /log/
 /.vscode/
+/k8/docker-credentials.yaml
