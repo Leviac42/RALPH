@@ -59,7 +59,8 @@ class ControlNode(Node):
         self.reverse_speed = 0
 
         try:
-            self.serial_port = serial.Serial("/dev/serial0", 9600, timeout=0.5)
+            self.serial_port = serial.Serial("/dev/ttyAML0", 9600, timeout=0.5)
+            self.get_logger().info("Opened serial port")
         except ImportError as e:
             print(f"Error opening serial port: {e}")
             self.get_logger().info("Failed to open serial port")
