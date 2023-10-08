@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ralph-deployment
+  namespace: ralph
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ralph
+  template:
+    metadata:
+      labels:
+        app: ralph
+    spec:
+      serviceAccountName: ralphbot
+      containers:
+      - name: ralph-container
+        image: docker.io/tinkster42/ralph:latest
+        volumeMounts:
+        - name: rasp-pi-serial
+          mountPath: /dev/serial0
+        resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+      volumes:
+      - name: rasp-pi-serial
+        hostPath:
+          path: /dev/serial0
+          type: CharDevice
