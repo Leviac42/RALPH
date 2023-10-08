@@ -20,6 +20,11 @@ spec:
         volumeMounts:
         - name: rasp-pi-serial
           mountPath: /dev/serial0
+        securityContext:
+          runAsUser: 1001
+          runAsGroup: 1002
+          allowPrivilegeEscalation: true
+          privileged: true
         resources:
           limits:
             cpu: 100m

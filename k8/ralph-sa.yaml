@@ -1,0 +1,11 @@
+# ralphbot namespace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ralphbot
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: ralph
+  namespace: ralphbot
