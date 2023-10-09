@@ -18,4 +18,6 @@ Right joystick center 0, Variable name motor_right
 Left trigger button for reverse 0-100, Variable name forward_speed
 Right trigger button for reverse 0-100, Variable name reverse speed
 
-    
+
+
+To get bluetooth to work:

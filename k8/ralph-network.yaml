@@ -1,0 +1,14 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-all-communication
+  namespace: ralphbot
+spec:
+  podSelector: {} # Empty selector selects all pods in this namespace
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - {} # Allows all ingress traffic
+  egress:
+  - {} # Allows all egress traffic

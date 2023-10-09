@@ -9,25 +9,37 @@ spec:
     image: tinkster42/ralph:latest
     securityContext:
       privileged: true
-    # tty: true
-    # stdin: true
-    # command: ["/bin/bash"]
-    # args: ["-c", "sleep 3600"]
+    tty: true
+    stdin: true
+    # run git pull command in container
+    command: ["/bin/bash", "-c"]
+    args:
+      - echo 'starting';
+        sudo chown -R ralph:ralph /dev/*;
+        source /opt/ros/iron/setup.bash;
+        source /opt/ws_ralph/install/setup.bash;
+        ros2 run joy joy_node & ros2 run motor_controller listener;
     volumeMounts:
     - mountPath: /dev/ttyAML0
       name: ttyaml0
+    - mountPath: /dev/input/js0
+      name: js0
     #use docker-credentials
     resources:
       limits:
-        cpu: 100m
-        memory: 100Mi
+        cpu: 500m
+        memory: 1024Mi
       requests:
-        cpu: 100m
-        memory: 100Mi
+        cpu: 500m
+        memory: 1024Mi
   imagePullSecrets:
   - name: docker-credentials
   volumes:
   - name: ttyaml0
     hostPath:
       path: /dev/ttyAML0
+      type: CharDevice
+  - name: js0
+    hostPath:
+      path: /dev/input/js0
       type: CharDevice
