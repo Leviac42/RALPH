@@ -1,4 +1,4 @@
-FROM ros:iron
+FROM ros:iron-ros-base
 ARG USERNAME=ralph
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
@@ -13,7 +13,7 @@ RUN groupadd --gid $USER_GID $USERNAME \
     && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
     && chmod 0440 /etc/sudoers.d/$USERNAME
 RUN apt-get update && apt-get upgrade -y
-RUN apt-get install -y python3-pip git minicom ros-iron-teleop-twist-joy tmux
+RUN apt-get install -y python3-pip git minicom ros-iron-teleop-twist-joy
 RUN git clone https://github.com/Leviac42/RALPH.git /opt/ws_ralph/
 RUN chown -R $USERNAME:$USERNAME /opt/ws_ralph/
 RUN cd /opt/ws_ralph && pip3 install -r /opt/ws_ralph/requirements.txt && colcon build --symlink-install
